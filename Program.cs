@@ -1,18 +1,97 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 
-namespace LabWork
+// Продукт — сайт
+class Website
 {
-    // Даний проект є шаблоном для виконання лабораторних робіт
-    // з курсу "Об'єктно-орієнтоване програмування та патерни проектування"
-    // Необхідно змінювати і дописувати код лише в цьому проекті
-    // Відео-інструкції щодо роботи з github можна переглянути 
-    // за посиланням https://www.youtube.com/@ViktorZhukovskyy/videos 
-    class Program
+    private List<string> _pages = new List<string>();
+
+    public void AddPage(string page)
     {
-        static void Main(string[] args)
+        _pages.Add(page);
+    }
+
+    public void ShowPages()
+    {
+        Console.WriteLine("Сайт містить сторінки:");
+        foreach (var page in _pages)
         {
-            
-            Console.WriteLine("Hello World!");
+            Console.WriteLine("- " + page);
         }
+    }
+}
+
+// Абстрактний будівельник
+interface IWebsiteBuilder
+{
+    void BuildHomePage();
+    void BuildContactPage();
+    void BuildServicesPage();
+    Website GetWebsite();
+}
+
+// Конкретний будівельник
+class ConcreteWebsiteBuilder : IWebsiteBuilder
+{
+    private Website _website = new Website();
+
+    public void BuildHomePage()
+    {
+        _website.AddPage("Головна сторінка");
+    }
+
+    public void BuildContactPage()
+    {
+        _website.AddPage("Контактна сторінка");
+    }
+
+    public void BuildServicesPage()
+    {
+        _website.AddPage("Сторінка з описом послуг");
+    }
+
+    public Website GetWebsite()
+    {
+        return _website;
+    }
+}
+
+// Директор
+class Director
+{
+    private IWebsiteBuilder _builder;
+
+    public Director(IWebsiteBuilder builder)
+    {
+        _builder = builder;
+    }
+
+    public void BuildMinimalWebsite()
+    {
+        _builder.BuildHomePage();
+        _builder.BuildContactPage();
+    }
+
+    public void BuildFullWebsite()
+    {
+        _builder.BuildHomePage();
+        _builder.BuildContactPage();
+        _builder.BuildServicesPage();
+    }
+}
+
+// Клієнт
+class Program
+{
+    static void Main()
+    {
+        IWebsiteBuilder builder = new ConcreteWebsiteBuilder();
+        Director director = new Director(builder);
+
+        // Будуємо повний сайт
+        director.BuildFullWebsite();
+
+        Website website = builder.GetWebsite();
+        website.ShowPages();
     }
 }
